@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -14,25 +13,24 @@ import javax.servlet.http.HttpServletResponse;
 import models.Message;
 import utils.DBUtil;
 
-@WebServlet("/index")
-public class IndexServlet extends HttpServlet {
+@WebServlet("/new")
+public class NewServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public IndexServlet() {
+    public NewServlet() {
         super();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
+        em.getTransaction().begin();
 
-        List<Message> messages = em.createNamedQuery("getAllMessages", Message.class).getResultList();
+        request.setAttribute("_token", request.getSession().getId());
+        // Messageのインスタンスを生成
+        request.setAttribute("message", new Message());
 
-        em.close();
-
-        request.setAttribute("messages", messages);
-
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/messages/index.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/messages/new.jsp");
         rd.forward(request, response);
-    }
-
+     }
 }
+
