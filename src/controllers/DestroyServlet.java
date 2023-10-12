@@ -19,7 +19,7 @@ public class DestroyServlet extends HttpServlet {
     public DestroyServlet() {
         super();
     }
-    
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String _token = request.getParameter("_token");
         if(_token != null && _token.equals(request.getSession().getId())) {
@@ -32,6 +32,7 @@ public class DestroyServlet extends HttpServlet {
             em.getTransaction().begin();
             em.remove(m);       // データ削除
             em.getTransaction().commit();
+            request.getSession().setAttribute("flush", "削除が完了しました。");       // ここを追記
             em.close();
 
             // セッションスコープ上の不要になったデータを削除
